@@ -114,7 +114,7 @@ SkAnalytics.Tracker = function Tracker(argmap) {
 		configDiscardHashTag,
 
 		// First-party cookie name prefix
-		configCookieNamePrefix = '_sp_',
+		configCookieNamePrefix = '_skan_',
 
 		// First-party cookie domain
 		// User agent defaults to origin hostname
