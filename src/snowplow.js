@@ -252,7 +252,7 @@ SnowPlow.build = function () {
 		* Returns a Tracker object, configured with the
 		* URL to the collector to use.
 		*
-		* @param string rawUrl The collector URL minus protocol and /i
+		* @param string rawUrl The collector URL minus protocol
 		*/
 		getTrackerUrl: function (rawUrl) {
 			return new SnowPlow.Tracker({url: rawUrl});

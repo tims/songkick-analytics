@@ -1,7 +1,7 @@
 /*!
- * SnowPlow - The world's most powerful web analytics platform
+ * SongkickAnalytics
  *
- * @description JavaScript tracker for SnowPlow
+ * @description JavaScript tracker for sending analytics events
  * @version     0.11.1
  * @author      Alex Dean, Simon Andersson, Anthon Pang
  * @copyright   Anthon Pang, SnowPlow Analytics Ltd
@@ -9,11 +9,7 @@
  */
 
 /*
- * For technical documentation:
- * https://github.com/snowplow/snowplow/wiki/javascript-tracker
- *
- * For the setup guide:
- * https://github.com/snowplow/snowplow/wiki/javascript-tracker-setup
+ * https://github.com/songkick/songkick-analytics
  * /
 
 /*

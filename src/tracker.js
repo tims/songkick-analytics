@@ -1,8 +1,9 @@
 /*
- * JavaScript tracker for SnowPlow: tracker.js
+ * Songkick Analytics JavaScript tracker
  * 
- * Significant portions copyright 2010 Anthon Pang. Remainder copyright 
- * 2012-2013 SnowPlow Analytics Ltd. All rights reserved. 
+ * Significant portions copyright 2010 Anthon Pang. Significant portions
+ * copyright 2012-2013 SnowPlow Analytics Ltd. Remainder Copyright 
+ * Songkick.com. All rights reserved. 
  * 
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are 
@@ -15,9 +16,10 @@
  *   notice, this list of conditions and the following disclaimer in the 
  *   documentation and/or other materials provided with the distribution. 
  *
- * * Neither the name of Anthon Pang nor SnowPlow Analytics Ltd nor the
- *   names of their contributors may be used to endorse or promote products
- *   derived from this software without specific prior written permission. 
+ * * Neither the name of Anthon Pang nor SnowPlow Analytics Ltd nor 
+ *   Songkick.com nor the names of their contributors may be used to 
+ *   endorse or promote products derived from this software without 
+ *   specific prior written permission. 
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
@@ -33,7 +35,7 @@
  */
 
 /*
- * SnowPlow Tracker class
+ * Songkick Tracker class
  *
  * Takes an argmap as its sole parameter. Argmap supports:
  *
@@ -627,7 +629,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 	 * @return string collectorUrl The tracker URL with protocol
 	 */
 	function asCollectorUrl(rawUrl) {
-		return ('https:' == document.location.protocol ? 'https' : 'http') + '://' + rawUrl + '/i';               
+		return ('https:' == document.location.protocol ? 'https' : 'http') + '://' + rawUrl;
 	}
 
 	/**
@@ -659,6 +661,14 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		}
 	}
 
+	function serializeObject(object) {
+    var props = [];
+    for(var key in object) {
+      props.push(encodeURIComponent(key) + "=" + encodeURIComponent(object[key]));
+    }
+    return props.join("&");  
+  }
+
 	/**
 	 * Log a structured event happening on this page
 	 *
@@ -668,90 +678,13 @@ SnowPlow.Tracker = function Tracker(argmap) {
 	 * @param string property (optional) Describes the object or the action performed on it, e.g. quantity of item added to basket
 	 * @param int|float|string value (optional) An integer that you can use to provide numerical data about the user event
 	 */
-	function logStructEvent(category, action, label, property, value) {
+	function logStructEvent(category, action, properties) {
 		var sb = requestStringBuilder();
 		sb.add('e', 'se'); // 'se' for Structured Event
 		sb.add('ev_ca', category);
 		sb.add('ev_ac', action)
-		sb.add('ev_la', label);
-		sb.add('ev_pr', property);
-		sb.add('ev_va', value);
+		sb.add('ev_pr', serializeObject(properties));
 		request = getRequest(sb, 'event');
-		sendRequest(request, configTrackerPause);
-	}
-
-	/**
-	 * Log an ad impression
-	 *
-	 * @param string bannerId Identifier for the ad banner displayed
-	 * @param string campaignId (optional) Identifier for the campaign which the banner belongs to
-	 * @param string advertiserId (optional) Identifier for the advertiser which the campaign belongs to
-	 * @param string userId (optional) Ad server identifier for the viewer of the banner
-	 */
-	// TODO: should add impressionId as well.
-	// TODO: should add in zoneId (aka placementId, slotId?) as well
-	function logImpression(bannerId, campaignId, advertiserId, userId) {
-		var sb = requestStringBuilder();
-		sb.add('e', 'ad'); // 'ad' for AD impression
-		sb.add('ad_ba', bannerId);
-		sb.add('ad_ca', campaignId)
-		sb.add('ad_ad', advertiserId);
-		sb.add('ad_uid', userId);
-		request = getRequest(sb, 'adimp');
-		sendRequest(request, configTrackerPause);
-	}
-
-	// TODO: add in ad clicks
-
-	/**
-	 * Log ecommerce transaction metadata
-	 *
-	 * @param string orderId 
-	 * @param string affiliation 
-	 * @param string total 
-	 * @param string tax 
- 	 * @param string shipping 
-	 * @param string city 
- 	 * @param string state 
- 	 * @param string country 
-	 */
-	// TODO: add params to comment
-	function logTransaction(orderId, affiliation, total, tax, shipping, city, state, country) {
-		var sb = requestStringBuilder();
-		sb.add('e', 'tr'); // 'tr' for TRansaction
-		sb.add('tr_id', orderId);
-		sb.add('tr_af', affiliation);
-		sb.add('tr_tt', total);
-		sb.add('tr_tx', tax);
-		sb.add('tr_sh', shipping);
-		sb.add('tr_ci', city);
-		sb.add('tr_st', state);
-		sb.add('tr_co', country);
-		var request = getRequest(sb, 'ecommerceTransaction');
-		sendRequest(request, configTrackerPause);
-	}
-
-	/**
-	 * Log ecommerce transaction item
-	 *
-	 * @param string orderId
-	 * @param string sku
-	 * @param string name
-	 * @param string category
-	 * @param string price
-	 * @param string quantity
-	 */
-	// TODO: add params to comment
-	function logTransactionItem(orderId, sku, name, category, price, quantity) {
-		var sb = requestStringBuilder();
-		sb.add('e', 'ti'); // 'ti' for Transaction Item
-		sb.add('ti_id', orderId);
-		sb.add('ti_sk', sku);
-		sb.add('ti_na', name);
-		sb.add('ti_ca', category);
-		sb.add('ti_pr', price);
-		sb.add('ti_qu', quantity);
-		var request = getRequest(sb, 'ecommerceTransactionItem');
 		sendRequest(request, configTrackerPause);
 	}
 
@@ -1618,7 +1551,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		 * Specify the SnowPlow collector URL. No need to include HTTP
 		 * or HTTPS - we will add this.
 		 * 
-		 * @param string rawUrl The collector URL minus protocol and /i
+		 * @param string rawUrl The collector URL minus protocol
 		 */
 		setCollectorUrl: function (rawUrl) {
 			configCollectorUrl = asCollectorUrl(rawUrl);
@@ -1631,120 +1564,10 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		 *
 		 * @param string category The name you supply for the group of objects you want to track
 		 * @param string action A string that is uniquely paired with each category, and commonly used to define the type of user interaction for the web object
-		 * @param string label (optional) An optional string to provide additional dimensions to the event data
-		 * @param string property (optional) Describes the object or the action performed on it, e.g. quantity of item added to basket
-		 * @param int|float|string value (optional) An integer that you can use to provide numerical data about the user event
+		 * @param string properties (optional) Object for aditional information, eg application data like application user id, test group.
 		 */
-		trackEvent: function (category, action, label, property, value) {
-
-			if (typeof console !== 'undefined') {
-				console.log("SnowPlow: trackEvent() is deprecated and will be removed in an upcoming version. Please use trackStructEvent() instead.");
-			}
-			logStructEvent(category, action, label, property, value);
+		logEvent: function (category, action, properties) {
+			logStructEvent(category, action, properties);
 		},
-
-		/**
-		 * Track a structured event happening on this page.
-		 *
-		 * Replaces trackEvent, making clear that the type
-		 * of event being tracked is a structured one.
-		 *
-		 * @param string category The name you supply for the group of objects you want to track
-		 * @param string action A string that is uniquely paired with each category, and commonly used to define the type of user interaction for the web object
-		 * @param string label (optional) An optional string to provide additional dimensions to the event data
-		 * @param string property (optional) Describes the object or the action performed on it, e.g. quantity of item added to basket
-		 * @param int|float|string value (optional) An integer that you can use to provide numerical data about the user event
-		 */
-		trackStructEvent: function (category, action, label, property, value) {
-			logStructEvent(category, action, label, property, value);                   
-		},
-
-		/**
-		 * Track an ad being served
-		 *
-		 * @param string bannerId Identifier for the ad banner displayed
-		 * @param string campaignId (optional) Identifier for the campaign which the banner belongs to
-		 * @param string advertiserId (optional) Identifier for the advertiser which the campaign belongs to
-		 * @param string userId (optional) Ad server identifier for the viewer of the banner
-		 */
-		 trackImpression: function (bannerId, campaignId, advertiserId, userId) {
-				 logImpression(bannerId, campaignId, advertiserId, userId);
-		 },
-
-		/**
-		 * Track an ecommerce transaction
-		 *
-		 * @param string orderId Required. Internal unique order id number for this transaction.
-		 * @param string affiliation Optional. Partner or store affiliation.
-		 * @param string total Required. Total amount of the transaction.
-		 * @param string tax Optional. Tax amount of the transaction.
-		 * @param string shipping Optional. Shipping charge for the transaction.
-		 * @param string city Optional. City to associate with transaction.
-		 * @param string state Optional. State to associate with transaction.
-		 * @param string country Optional. Country to associate with transaction.
-		 */
-		 addTrans: function(orderId, affiliation, total, tax, shipping, city, state, country) {
-			 ecommerceTransaction.transaction = {
-				 orderId: orderId,
-				 affiliation: affiliation,
-				 total: total,
-				 tax: tax,
-				 shipping: shipping,
-				 city: city,
-				 state: state,
-				 country: country};
-		 },
-
-		/**
-		 * Track an ecommerce transaction item
-		 *
-		 * @param string orderId Required Order ID of the transaction to associate with item.
-		 * @param string sku Required. Item's SKU code.
-		 * @param string name Optional. Product name.
-		 * @param string category Optional. Product category.
-		 * @param string price Required. Product price.
-		 * @param string quantity Required. Purchase quantity.
-		 */
-		 addItem: function(orderId, sku, name, category, price, quantity) {
-			 ecommerceTransaction.items.push({
-						orderId: orderId,
-						sku: sku,
-						name: name,
-						category: category,
-						price: price,
-						quantity: quantity});
-		 },
-
-		/**
-		 * Commit the ecommerce transaction
-		 *
-		 * This call will send the data specified with addTrans,
-		 * addItem methods to the tracking server.
-		 */
-		 trackTrans: function() {
-			 logTransaction(
-					 ecommerceTransaction.transaction.orderId,
-					 ecommerceTransaction.transaction.affiliation,
-					 ecommerceTransaction.transaction.total,
-					 ecommerceTransaction.transaction.tax,
-					 ecommerceTransaction.transaction.shipping,
-					 ecommerceTransaction.transaction.city,
-					 ecommerceTransaction.transaction.state,
-					 ecommerceTransaction.transaction.country
-					);
-			 ecommerceTransaction.items.forEach(function(item) {
-				 logTransactionItem(
-					 item.orderId,
-					 item.sku,
-					 item.name,
-					 item.category,
-					 item.price,
-					 item.quantity
-					 );
-			 });
-
-			 ecommerceTransaction = ecommerceTransactionTemplate();
-		 }
-
-	};
+	}
 }
