@@ -1,14 +1,18 @@
 /*!
  * SongkickAnalytics
  *
- * @description JavaScript tracker for sending analytics events
+ * @description A cut down version of the SnowPlow tracker for sending analytics events, catered to Songkick's needs.
  * @version     0.11.1
- * @author      Alex Dean, Simon Andersson, Anthon Pang
- * @copyright   Anthon Pang, SnowPlow Analytics Ltd
+ * @author      Alex Dean, Simon Andersson, Anthon Pang, Tim Sell
+ * @copyright   Anthon Pang, SnowPlow Analytics Ltd, Songkick.com
  * @license     Simplified BSD
  */
 
 /*
+ * Original
+ * https://github.com/snowplow/snowplow
+ *
+ * Songkick's version
  * https://github.com/songkick/songkick-analytics
  * /
 

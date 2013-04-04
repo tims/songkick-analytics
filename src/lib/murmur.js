@@ -8,7 +8,7 @@
  * @link        http://github.com/garycourt/murmurhash-js
  *
  * Modifications:
- * - Added into SnowPlow namespace
+ * - Added into SkAnalytics namespace
  */
 
 /**
@@ -24,7 +24,7 @@
  * @return {number} 32-bit positive integer hash 
  */
 
-SnowPlow.murmurhash3_32_gc = function murmurhash3_32_gc(key, seed) {
+SkAnalytics.murmurhash3_32_gc = function murmurhash3_32_gc(key, seed) {
 	var remainder, bytes, h1, h1b, c1, c1b, c2, c2b, k1, i;
 
 	remainder = key.length & 3; // key.length % 4

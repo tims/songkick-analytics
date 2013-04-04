@@ -1,9 +1,10 @@
 /*
- * Songkick Analytics JavaScript tracker
+ * JavaScript tracker for Songkick
  * 
- * Significant portions copyright 2010 Anthon Pang. Significant portions
- * copyright 2012-2013 SnowPlow Analytics Ltd. Remainder Copyright 
- * Songkick.com. All rights reserved. 
+ * Significant portions copyright 2010 Anthon Pang. 
+ * Significant portions copyright 2012-2013 SnowPlow Analytics Ltd.
+ * Remainder copyright 2013 Songkick.com.
+ * All rights reserved. 
  * 
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are 
@@ -16,8 +17,8 @@
  *   notice, this list of conditions and the following disclaimer in the 
  *   documentation and/or other materials provided with the distribution. 
  *
- * * Neither the name of Anthon Pang nor SnowPlow Analytics Ltd nor 
- *   Songkick.com nor the names of their contributors may be used to 
+ * * Neither the name of Anthon Pang nor SnowPlow Analytics Ltd 
+ *   nor Songkick.com nor the names of their contributors may be used to 
  *   endorse or promote products derived from this software without 
  *   specific prior written permission. 
  *
@@ -47,7 +48,7 @@
  *
  * See also: Tracker.setCollectorUrl() and Tracker.setCollectorCf()
  */
-SnowPlow.Tracker = function Tracker(argmap) {
+SkAnalytics.Tracker = function Tracker(argmap) {
 
 	/************************************************************
 	 * Private members
@@ -62,28 +63,28 @@ SnowPlow.Tracker = function Tracker(argmap) {
 /*</DEBUG>*/
 
 		// Current URL and Referrer URL
-		locationArray = SnowPlow.fixupUrl(SnowPlow.documentAlias.domain, SnowPlow.windowAlias.location.href, SnowPlow.getReferrer()),
-		domainAlias = SnowPlow.fixupDomain(locationArray[0]),
+		locationArray = SkAnalytics.fixupUrl(SkAnalytics.documentAlias.domain, SkAnalytics.windowAlias.location.href, SkAnalytics.getReferrer()),
+		domainAlias = SkAnalytics.fixupDomain(locationArray[0]),
 		locationHrefAlias = locationArray[1],
 		configReferrerUrl = locationArray[2],
 
-		// Request method is always GET for SnowPlow
+		// Request method is always GET for SkAnalytics
 		configRequestMethod = 'GET',
 
 		// Platform is always web for this tracker
 		configPlatform = 'web',
 
-		// SnowPlow collector URL
+		// SkAnalytics collector URL
 		configCollectorUrl = constructCollectorUrl(argmap),
 
 		// Site ID
-		configTrackerSiteId = '', // Updated for SnowPlow
+		configTrackerSiteId = '', // Updated for SkAnalytics
 
 		// Document URL
 		configCustomUrl,
 
 		// Document title
-		configTitle = SnowPlow.documentAlias.title,
+		configTitle = SkAnalytics.documentAlias.title,
 
 		// Extensions to be treated as download links
 		configDownloadExtensions = '7z|aac|ar[cj]|as[fx]|avi|bin|csv|deb|dmg|doc|exe|flv|gif|gz|gzip|hqx|jar|jpe?g|js|mp(2|3|4|e?g)|mov(ie)?|ms[ip]|od[bfgpst]|og[gv]|pdf|phps|png|ppt|qtm?|ra[mr]?|rpm|sea|sit|tar|t?bz2?|tgz|torrent|txt|wav|wm[av]|wpd||xls|xml|z|zip',
@@ -139,10 +140,10 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		configReferralCookieTimeout = 15768000000, // 6 months
 
 		// Document character set
-		documentCharset = SnowPlow.documentAlias.characterSet || SnowPlow.documentAlias.charset,
+		documentCharset = SkAnalytics.documentAlias.characterSet || SkAnalytics.documentAlias.charset,
 
 		// Browser language (or Windows language for IE). Imperfect but CloudFront doesn't log the Accept-Language header
-		browserLanguage = SnowPlow.navigatorAlias.userLanguage || SnowPlow.navigatorAlias.language,
+		browserLanguage = SkAnalytics.navigatorAlias.userLanguage || SkAnalytics.navigatorAlias.language,
 
 		// Browser features via client-side data collection
 		browserFeatures = detectBrowserFeatures(),
@@ -173,7 +174,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		lastTarget,
 
 		// Hash function
-		hash = SnowPlow.sha1,
+		hash = SkAnalytics.sha1,
 
 		// Domain hash value
 		domainHash,
@@ -251,7 +252,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		}
 
 		if (url.slice(0, 1) === '/') {
-			return getProtocolScheme(baseUrl) + '://' + SnowPlow.getHostName(baseUrl) + url;
+			return getProtocolScheme(baseUrl) + '://' + SkAnalytics.getHostName(baseUrl) + url;
 		}
 
 		baseUrl = purify(baseUrl);
@@ -272,7 +273,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 	 * a website only has one domain.
 	 *
 	 * TODO: I think we can blow this away for
-	 * SnowPlow and handle the equivalent with a
+	 * SkAnalytics and handle the equivalent with a
 	 * whitelist of the site's domains. 
 	 * 
 	 */
@@ -283,7 +284,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 
 		for (i = 0; i < configHostsAlias.length; i++) {
 
-			alias = SnowPlow.fixupDomain(configHostsAlias[i].toLowerCase());
+			alias = SkAnalytics.fixupDomain(configHostsAlias[i].toLowerCase());
 
 			if (hostName === alias) {
 				return true;
@@ -304,7 +305,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 	}
 
 	/*
-	 * Send image request to the SnowPlow Collector using GET.
+	 * Send image request to the SkAnalytics Collector using GET.
 	 * The Collector serves a transparent, single pixel (1x1) GIF
 	 */
 	function getImage(request) {
@@ -313,7 +314,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 
 		// Let's chec that we have a Url to ping
 		if (configCollectorUrl === null) {
-			throw "No SnowPlow collector configured, cannot track";
+			throw "No SkAnalytics collector configured, cannot track";
 		}
 
 		// Okay? Let's proceed.
@@ -329,7 +330,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 
 		if (!configDoNotTrack) {
 			getImage(request);
-			SnowPlow.expireDateTime = now.getTime() + delay;
+			SkAnalytics.expireDateTime = now.getTime() + delay;
 		}
 	}
 
@@ -364,18 +365,18 @@ SnowPlow.Tracker = function Tracker(argmap) {
 	 * This wrapper supports both.
 	 *
 	 * TODO: simplify in February 2013 back to:
-	 * return SnowPlow.getCookie(getCookieName(cookieName));
+	 * return SkAnalytics.getCookie(getCookieName(cookieName));
 	 */
 	function getCookieValue(cookieName) {
 
 		// First we try the new cookie
-		var cookieValue = SnowPlow.getCookie(getCookieName(cookieName));
+		var cookieValue = SkAnalytics.getCookie(getCookieName(cookieName));
 		if (cookieValue) {
 			return cookieValue;
 		}
 
 		// Last we try the legacy cookie. May still return failure.
-		return SnowPlow.getCookie(getLegacyCookieName(cookieName));
+		return SkAnalytics.getCookie(getLegacyCookieName(cookieName));
 	}
 
 	/*
@@ -384,12 +385,12 @@ SnowPlow.Tracker = function Tracker(argmap) {
 	function hasCookies() {
 		var testCookieName = getCookieName('testcookie');
 
-		if (!SnowPlow.isDefined(SnowPlow.navigatorAlias.cookieEnabled)) {
-			SnowPlow.setCookie(testCookieName, '1');
-			return SnowPlow.getCookie(testCookieName) === '1' ? '1' : '0';
+		if (!SkAnalytics.isDefined(SkAnalytics.navigatorAlias.cookieEnabled)) {
+			SkAnalytics.setCookie(testCookieName, '1');
+			return SkAnalytics.getCookie(testCookieName) === '1' ? '1' : '0';
 		}
 
-		return SnowPlow.navigatorAlias.cookieEnabled ? '1' : '0';
+		return SkAnalytics.navigatorAlias.cookieEnabled ? '1' : '0';
 	}
 
 	/*
@@ -420,8 +421,8 @@ SnowPlow.Tracker = function Tracker(argmap) {
 	 * Returns [pageXOffset, pageYOffset].
 	 */
 	function getPageOffsets() {
-		return [SnowPlow.documentAlias.body.scrollLeft || SnowPlow.windowAlias.pageXOffset,
-		       SnowPlow.documentAlias.body.scrollTop || SnowPlow.windowAlias.pageYOffset];
+		return [SkAnalytics.documentAlias.body.scrollLeft || SkAnalytics.windowAlias.pageXOffset,
+		       SkAnalytics.documentAlias.body.scrollTop || SkAnalytics.windowAlias.pageYOffset];
 	}
 
 	/*
@@ -465,7 +466,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 	 * or when there is a new visit or a new page view
 	 */
 	function setDomainUserIdCookie(_domainUserId, createTs, visitCount, nowTs, lastVisitTs) {
-		SnowPlow.setCookie(getCookieName('id'), _domainUserId + '.' + createTs + '.' + visitCount + '.' + nowTs + '.' + lastVisitTs, configVisitorCookieTimeout, configCookiePath, configCookieDomain);
+		SkAnalytics.setCookie(getCookieName('id'), _domainUserId + '.' + createTs + '.' + visitCount + '.' + nowTs + '.' + lastVisitTs, configVisitorCookieTimeout, configCookiePath, configCookieDomain);
 	}
 
 	/*
@@ -486,8 +487,8 @@ SnowPlow.Tracker = function Tracker(argmap) {
 			// Note: this isn't a RFC4122-compliant UUID
 			if (!domainUserId) {
 				domainUserId = hash(
-					(SnowPlow.navigatorAlias.userAgent || '') +
-						(SnowPlow.navigatorAlias.platform || '') +
+					(SkAnalytics.navigatorAlias.userAgent || '') +
+						(SkAnalytics.navigatorAlias.platform || '') +
 						JSON2.stringify(browserFeatures) + nowTs
 				).slice(0, 16); // 16 hexits = 64 bits
 			}
@@ -552,8 +553,8 @@ SnowPlow.Tracker = function Tracker(argmap) {
 			featurePrefix;
 
 		if (configDoNotTrack) {
-			SnowPlow.setCookie(idname, '', -1, configCookiePath, configCookieDomain);
-			SnowPlow.setCookie(sesname, '', -1, configCookiePath, configCookieDomain);
+			SkAnalytics.setCookie(idname, '', -1, configCookiePath, configCookieDomain);
+			SkAnalytics.setCookie(sesname, '', -1, configCookiePath, configCookieDomain);
 			return '';
 		}
 
@@ -595,16 +596,12 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		}
 
 		// Add the page URL last as it may take us over the IE limit (and we don't always need it)
-		sb.add('url', purify(SnowPlow.windowAlias.location));
+		sb.add('url', purify(SkAnalytics.windowAlias.location));
 		var request = sb.build();
 
 		// Update cookies
 		setDomainUserIdCookie(_domainUserId, createTs, visitCount, nowTs, lastVisitTs);
-		SnowPlow.setCookie(sesname, '*', configSessionCookieTimeout, configCookiePath, configCookieDomain);
-
-		// Tracker plugin hook
-		// TODO: we can blow this away for SnowPlow
-		request += SnowPlow.executePluginMethod(pluginMethod);
+		SkAnalytics.setCookie(sesname, '*', configSessionCookieTimeout, configCookiePath, configCookieDomain);
 
 		return request;
 	}
@@ -633,7 +630,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 	}
 
 	/**
-	 * A helper to build a SnowPlow request string from an
+	 * A helper to build a SkAnalytics request string from an
 	 * an optional initial value plus a set of individual
 	 * name-value pairs, provided using the add method.
 	 *
@@ -645,7 +642,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		var str = initialValue || '';
 		var addNvPair = function(key, value, encode) {
 			if (value !== undefined && value !== '') {
-				str += '&' + key + '=' + (encode ? SnowPlow.encodeWrapper(value) : value);
+				str += '&' + key + '=' + (encode ? SkAnalytics.encodeWrapper(value) : value);
 			}
 		};
 		return {
@@ -696,7 +693,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 	function logPageView(customTitle) {
 
 		// Fixup page title. We'll pass this to logPagePing too.
-		var pageTitle = SnowPlow.fixupTitle(customTitle || configTitle);
+		var pageTitle = SkAnalytics.fixupTitle(customTitle || configTitle);
 
 		// Log page view
 		var sb = requestStringBuilder();
@@ -715,19 +712,19 @@ SnowPlow.Tracker = function Tracker(argmap) {
 
 			// Add event handlers; cross-browser compatibility here varies significantly
 			// @see http://quirksmode.org/dom/events
-			SnowPlow.addEventListener(SnowPlow.documentAlias, 'click', activityHandler);
-			SnowPlow.addEventListener(SnowPlow.documentAlias, 'mouseup', activityHandler);
-			SnowPlow.addEventListener(SnowPlow.documentAlias, 'mousedown', activityHandler);
-			SnowPlow.addEventListener(SnowPlow.documentAlias, 'mousemove', activityHandler);
-			SnowPlow.addEventListener(SnowPlow.documentAlias, 'mousewheel', activityHandler);
-			SnowPlow.addEventListener(SnowPlow.windowAlias, 'DOMMouseScroll', activityHandler);
-			SnowPlow.addEventListener(SnowPlow.windowAlias, 'scroll', scrollHandler); // Will updateMaxScrolls() for us
-			SnowPlow.addEventListener(SnowPlow.documentAlias, 'keypress', activityHandler);
-			SnowPlow.addEventListener(SnowPlow.documentAlias, 'keydown', activityHandler);
-			SnowPlow.addEventListener(SnowPlow.documentAlias, 'keyup', activityHandler);
-			SnowPlow.addEventListener(SnowPlow.windowAlias, 'resize', activityHandler);
-			SnowPlow.addEventListener(SnowPlow.windowAlias, 'focus', activityHandler);
-			SnowPlow.addEventListener(SnowPlow.windowAlias, 'blur', activityHandler);
+			SkAnalytics.addEventListener(SkAnalytics.documentAlias, 'click', activityHandler);
+			SkAnalytics.addEventListener(SkAnalytics.documentAlias, 'mouseup', activityHandler);
+			SkAnalytics.addEventListener(SkAnalytics.documentAlias, 'mousedown', activityHandler);
+			SkAnalytics.addEventListener(SkAnalytics.documentAlias, 'mousemove', activityHandler);
+			SkAnalytics.addEventListener(SkAnalytics.documentAlias, 'mousewheel', activityHandler);
+			SkAnalytics.addEventListener(SkAnalytics.windowAlias, 'DOMMouseScroll', activityHandler);
+			SkAnalytics.addEventListener(SkAnalytics.windowAlias, 'scroll', scrollHandler); // Will updateMaxScrolls() for us
+			SkAnalytics.addEventListener(SkAnalytics.documentAlias, 'keypress', activityHandler);
+			SkAnalytics.addEventListener(SkAnalytics.documentAlias, 'keydown', activityHandler);
+			SkAnalytics.addEventListener(SkAnalytics.documentAlias, 'keyup', activityHandler);
+			SkAnalytics.addEventListener(SkAnalytics.windowAlias, 'resize', activityHandler);
+			SkAnalytics.addEventListener(SkAnalytics.windowAlias, 'focus', activityHandler);
+			SkAnalytics.addEventListener(SkAnalytics.windowAlias, 'blur', activityHandler);
 
 			// Periodic check for activity.
 			lastActivityTime = now.getTime();
@@ -813,9 +810,9 @@ SnowPlow.Tracker = function Tracker(argmap) {
 				prefix = prefixes[i];
 
 				// does this browser support the page visibility API?
-				if (Object.prototype.hasOwnProperty.call(SnowPlow.documentAlias, prefixPropertyName(prefix, 'hidden'))) {
+				if (Object.prototype.hasOwnProperty.call(SkAnalytics.documentAlias, prefixPropertyName(prefix, 'hidden'))) {
 					// if pre-rendered, then defer callback until page visibility changes
-					if (SnowPlow.documentAlias[prefixPropertyName(prefix, 'visibilityState')] === 'prerender') {
+					if (SkAnalytics.documentAlias[prefixPropertyName(prefix, 'visibilityState')] === 'prerender') {
 						isPreRendered = true;
 					}
 					break;
@@ -825,8 +822,8 @@ SnowPlow.Tracker = function Tracker(argmap) {
 
 		if (isPreRendered) {
 			// note: the event name doesn't follow the same naming convention as vendor properties
-			SnowPlow.addEventListener(SnowPlow.documentAlias, prefix + 'visibilitychange', function ready() {
-				SnowPlow.documentAlias.removeEventListener(prefix + 'visibilitychange', ready, false);
+			SkAnalytics.addEventListener(SkAnalytics.documentAlias, prefix + 'visibilitychange', function ready() {
+				SkAnalytics.documentAlias.removeEventListener(prefix + 'visibilitychange', ready, false);
 				callback();
 			});
 			return;
@@ -883,14 +880,14 @@ SnowPlow.Tracker = function Tracker(argmap) {
 			linkType;
 
 		while ((parentElement = sourceElement.parentNode) !== null &&
-				SnowPlow.isDefined(parentElement) && // buggy IE5.5
+				SkAnalytics.isDefined(parentElement) && // buggy IE5.5
 				((tag = sourceElement.tagName.toUpperCase()) !== 'A' && tag !== 'AREA')) {
 			sourceElement = parentElement;
 		}
 
-		if (SnowPlow.isDefined(sourceElement.href)) {
+		if (SkAnalytics.isDefined(sourceElement.href)) {
 			// browsers, such as Safari, don't downcase hostname and href
-			var originalSourceHostName = sourceElement.hostname || SnowPlow.getHostName(sourceElement.href),
+			var originalSourceHostName = sourceElement.hostname || SkAnalytics.getHostName(sourceElement.href),
 				sourceHostName = originalSourceHostName.toLowerCase(),
 				sourceHref = sourceElement.href.replace(originalSourceHostName, sourceHostName),
 				scriptProtocol = new RegExp('^(javascript|vbscript|jscript|mocha|livescript|ecmascript|mailto):', 'i');
@@ -901,7 +898,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 				linkType = getLinkType(sourceElement.className, sourceHref, isSiteHostName(sourceHostName));
 				if (linkType) {
 					// decodeUrl %xx
-					sourceHref = SnowPlow.decodeUrl(sourceHref);
+					sourceHref = SkAnalytics.decodeUrl(sourceHref);
 					logLink(sourceHref, linkType);
 				}
 			}
@@ -915,7 +912,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		var button,
 			target;
 
-		evt = evt || SnowPlow.windowAlias.event;
+		evt = evt || SkAnalytics.windowAlias.event;
 		button = evt.which || evt.button;
 		target = evt.target || evt.srcElement;
 
@@ -945,10 +942,10 @@ SnowPlow.Tracker = function Tracker(argmap) {
 	function addClickListener(element, enable) {
 		if (enable) {
 			// for simplicity and performance, we ignore drag events
-			SnowPlow.addEventListener(element, 'mouseup', clickHandler, false);
-			SnowPlow.addEventListener(element, 'mousedown', clickHandler, false);
+			SkAnalytics.addEventListener(element, 'mouseup', clickHandler, false);
+			SkAnalytics.addEventListener(element, 'mousedown', clickHandler, false);
 		} else {
-			SnowPlow.addEventListener(element, 'click', clickHandler, false);
+			SkAnalytics.addEventListener(element, 'click', clickHandler, false);
 		}
 	}
 
@@ -963,7 +960,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 
 			var i,
 				ignorePattern = getClassesRegExp(configIgnoreClasses, 'ignore'),
-				linkElements = SnowPlow.documentAlias.links;
+				linkElements = SkAnalytics.documentAlias.links;
 
 			if (linkElements) {
 				for (i = 0; i < linkElements.length; i++) {
@@ -1005,7 +1002,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 	            plugins.push([navigator.plugins[i].name + "::" + navigator.plugins[i].description, mt.join("~")]);
 	        }
 	    }
-	    return SnowPlow.murmurhash3_32_gc(fingerprint.join("###") + "###" + plugins.sort().join(";"), 123412414);
+	    return SkAnalytics.murmurhash3_32_gc(fingerprint.join("###") + "###" + plugins.sort().join(";"), 123412414);
 	}
 
 	/*
@@ -1024,10 +1021,10 @@ SnowPlow.Tracker = function Tracker(argmap) {
 	 * - http://responsejs.com/labs/dimensions/
 	 */
 	function detectViewport() {
-		var e = SnowPlow.windowAlias, a = 'inner';
-		if (!('innerWidth' in SnowPlow.windowAlias)) {
+		var e = SkAnalytics.windowAlias, a = 'inner';
+		if (!('innerWidth' in SkAnalytics.windowAlias)) {
 			a = 'client';
-			e = SnowPlow.documentAlias.documentElement || SnowPlow.documentAlias.body;
+			e = SkAnalytics.documentAlias.documentElement || SkAnalytics.documentAlias.body;
 		}
 		return e[a+'Width'] + 'x' + e[a+'Height'];
 	}
@@ -1040,7 +1037,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 	 * - http://andylangton.co.uk/articles/javascript/get-viewport-size-javascript/
 	 */
 	function detectDocumentSize() {
-		var de = SnowPlow.documentAlias.documentElement; // Alias
+		var de = SkAnalytics.documentAlias.documentElement; // Alias
 		var w = Math.max(de.clientWidth, de.offsetWidth, de.scrollWidth);
 		var h = Math.max(de.clientHeight, de.offsetHeight, de.scrollHeight);
 		return w + 'x' + h;
@@ -1073,10 +1070,10 @@ SnowPlow.Tracker = function Tracker(argmap) {
 			features = {};
 
 		// General plugin detection
-		if (SnowPlow.navigatorAlias.mimeTypes && SnowPlow.navigatorAlias.mimeTypes.length) {
+		if (SkAnalytics.navigatorAlias.mimeTypes && SkAnalytics.navigatorAlias.mimeTypes.length) {
 			for (i in pluginMap) {
 				if (Object.prototype.hasOwnProperty.call(pluginMap, i)) {
-					mimeType = SnowPlow.navigatorAlias.mimeTypes[pluginMap[i]];
+					mimeType = SkAnalytics.navigatorAlias.mimeTypes[pluginMap[i]];
 					features[i] = (mimeType && mimeType.enabledPlugin) ? '1' : '0';
 				}
 			}
@@ -1085,18 +1082,18 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		// Safari and Opera
 		// IE6/IE7 navigator.javaEnabled can't be aliased, so test directly
 		if (typeof navigator.javaEnabled !== 'unknown' &&
-				SnowPlow.isDefined(SnowPlow.navigatorAlias.javaEnabled) &&
-				SnowPlow.navigatorAlias.javaEnabled()) {
+				SkAnalytics.isDefined(SkAnalytics.navigatorAlias.javaEnabled) &&
+				SkAnalytics.navigatorAlias.javaEnabled()) {
 			features.java = '1';
 		}
 
 		// Firefox
-		if (SnowPlow.isFunction(SnowPlow.windowAlias.GearsFactory)) {
+		if (SkAnalytics.isFunction(SkAnalytics.windowAlias.GearsFactory)) {
 			features.gears = '1';
 		}
 
 		// Other browser features
-		features.res = SnowPlow.screenAlias.width + 'x' + SnowPlow.screenAlias.height;
+		features.res = SkAnalytics.screenAlias.width + 'x' + SkAnalytics.screenAlias.height;
 		features.cd = screen.colorDepth;
 		features.cookie = hasCookies();
 
@@ -1111,10 +1108,10 @@ SnowPlow.Tracker = function Tracker(argmap) {
 	function registerHook(hookName, userHook) {
 		var hookObj = null;
 
-		if (SnowPlow.isString(hookName) && !SnowPlow.isDefined(registeredHooks[hookName]) && userHook) {
-			if (SnowPlow.isObject(userHook)) {
+		if (SkAnalytics.isString(hookName) && !SkAnalytics.isDefined(registeredHooks[hookName]) && userHook) {
+			if (SkAnalytics.isObject(userHook)) {
 				hookObj = userHook;
-			} else if (SnowPlow.isString(userHook)) {
+			} else if (SkAnalytics.isString(userHook)) {
 				try {
 					eval('hookObj =' + userHook);
 				} catch (e) { }
@@ -1139,7 +1136,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 	/*
 	 * initialize test plugin
 	 */
-	SnowPlow.executePluginMethod('run', registerHook);
+	SkAnalytics.executePluginMethod('run', registerHook);
 /*</DEBUG>*/
 
 	/************************************************************
@@ -1194,7 +1191,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		 */
 		getVisitorId: function () {
 			if (typeof console !== 'undefined') {
-				console.log("SnowPlow: getVisitorId() is deprecated and will be removed in an upcoming version. Please use getDomainUserId() instead.");
+				console.log("SkAnalytics: getVisitorId() is deprecated and will be removed in an upcoming version. Please use getDomainUserId() instead.");
 			}
 			return (loadVisitorIdCookie())[1];
 		},
@@ -1208,7 +1205,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		 */
 		getVisitorInfo: function () {
 			if (typeof console !== 'undefined') {
-				console.log("SnowPlow: getVisitorInfo() is deprecated and will be removed in an upcoming version. Please use getDomainUserInfo() instead.");
+				console.log("SkAnalytics: getVisitorInfo() is deprecated and will be removed in an upcoming version. Please use getDomainUserInfo() instead.");
 			}
 			return loadVisitorIdCookie();
 		},
@@ -1222,7 +1219,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		 */
 		setSiteId: function (siteId) {
 			if (typeof console !== 'undefined') {
-				console.log("SnowPlow: setSiteId() is deprecated and will be removed in an upcoming version. Please use setAppId() instead.");
+				console.log("SkAnalytics: setSiteId() is deprecated and will be removed in an upcoming version. Please use setAppId() instead.");
 			}
 			configTrackerSiteId = siteId;
 		},
@@ -1269,7 +1266,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		 * @param string|array hostsAlias
 		 */
 		setDomains: function (hostsAlias) {
-			configHostsAlias = SnowPlow.isString(hostsAlias) ? [hostsAlias] : hostsAlias;
+			configHostsAlias = SkAnalytics.isString(hostsAlias) ? [hostsAlias] : hostsAlias;
 			configHostsAlias.push(domainAlias);
 		},
 
@@ -1279,7 +1276,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		 * @param string|array ignoreClasses
 		 */
 		setIgnoreClasses: function (ignoreClasses) {
-			configIgnoreClasses = SnowPlow.isString(ignoreClasses) ? [ignoreClasses] : ignoreClasses;
+			configIgnoreClasses = SkAnalytics.isString(ignoreClasses) ? [ignoreClasses] : ignoreClasses;
 		},
 
 		/**
@@ -1315,7 +1312,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		 * @param string|array downloadClasses
 		 */
 		setDownloadClasses: function (downloadClasses) {
-			configDownloadClasses = SnowPlow.isString(downloadClasses) ? [downloadClasses] : downloadClasses;
+			configDownloadClasses = SkAnalytics.isString(downloadClasses) ? [downloadClasses] : downloadClasses;
 		},
 
 		/**
@@ -1324,7 +1321,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		 * @param string|array linkClasses
 		 */
 		setLinkClasses: function (linkClasses) {
-			configLinkClasses = SnowPlow.isString(linkClasses) ? [linkClasses] : linkClasses;
+			configLinkClasses = SkAnalytics.isString(linkClasses) ? [linkClasses] : linkClasses;
 		},
 
 		/**
@@ -1352,7 +1349,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		 */
 		setCookieDomain: function (domain) {
 
-			configCookieDomain = SnowPlow.fixupDomain(domain);
+			configCookieDomain = SkAnalytics.fixupDomain(domain);
 			updateDomainHash();
 		},
 
@@ -1399,7 +1396,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		 * @param bool enable If true, don't track if user agent sends 'do-not-track' header
 		 */
 		setDoNotTrack: function (enable) {
-			var dnt = SnowPlow.navigatorAlias.doNotTrack || SnowPlow.navigatorAlias.msDoNotTrack;
+			var dnt = SkAnalytics.navigatorAlias.doNotTrack || SkAnalytics.navigatorAlias.msDoNotTrack;
 
 			configDoNotTrack = enable && (dnt === 'yes' || dnt === '1');
 		},
@@ -1433,12 +1430,12 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		 * @param bool enable If true, use pseudo click-handler (mousedown+mouseup)
 		 */
 		enableLinkTracking: function (enable) {
-			if (SnowPlow.hasLoaded) {
+			if (SkAnalytics.hasLoaded) {
 				// the load event has already fired, add the click listeners now
 				addClickListeners(enable);
 			} else {
 				// defer until page has loaded
-				SnowPlow.registeredOnLoadHandlers.push(function () {
+				SkAnalytics.registeredOnLoadHandlers.push(function () {
 					addClickListeners(enable);
 				});
 			}
@@ -1463,8 +1460,8 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		 * Frame buster
 		 */
 		killFrame: function () {
-			if (SnowPlow.windowAlias.location !== SnowPlow.windowAlias.top.location) {
-				SnowPlow.windowAlias.top.location = SnowPlow.windowAlias.location;
+			if (SkAnalytics.windowAlias.location !== SkAnalytics.windowAlias.top.location) {
+				SkAnalytics.windowAlias.top.location = SkAnalytics.windowAlias.location;
 			}
 		},
 
@@ -1474,8 +1471,8 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		 * @param string url Redirect to this URL
 		 */
 		redirectFile: function (url) {
-			if (SnowPlow.windowAlias.location.protocol === 'file:') {
-				SnowPlow.windowAlias.location = url;
+			if (SkAnalytics.windowAlias.location.protocol === 'file:') {
+				SkAnalytics.windowAlias.location = url;
 			}
 		},
 
@@ -1522,22 +1519,6 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		},
 
 		/**
-		 * Toggle whether to attach User ID to the querystring or not
-		 *
-		 * DEPRECATED: because we now have three separate user IDs:
-		 * uid (business-set), nuid (3rd-party cookie) and duid (1st-party
-		 * cookie). So there's no need to enable or disable specific user IDs.
-		 *
-		 * @param bool attach Whether to attach User ID or not
-		 */
-		attachUserId: function (attach) {
-
-			if (typeof console !== 'undefined') {
-				console.log("SnowPlow: attachUserId() is deprecated and will be removed in an upcoming version. It no longer does anything (because nuid and duid have been separated out).");
-			}
-		},
-
-		/**
 		 * Configure this tracker to log to a CloudFront collector. 
 		 *
 		 * @param string distSubdomain The subdomain on your CloudFront collector's distribution
@@ -1548,7 +1529,7 @@ SnowPlow.Tracker = function Tracker(argmap) {
 
 		/**
 		 *
-		 * Specify the SnowPlow collector URL. No need to include HTTP
+		 * Specify the SkAnalytics collector URL. No need to include HTTP
 		 * or HTTPS - we will add this.
 		 * 
 		 * @param string rawUrl The collector URL minus protocol
@@ -1560,13 +1541,34 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		/**
 		 * Track an event happening on this page
 		 *
-		 * DEPRECATED: use getStructEvent instead
-		 *
 		 * @param string category The name you supply for the group of objects you want to track
 		 * @param string action A string that is uniquely paired with each category, and commonly used to define the type of user interaction for the web object
 		 * @param string properties (optional) Object for aditional information, eg application data like application user id, test group.
 		 */
 		logEvent: function (category, action, properties) {
+			logStructEvent(category, action, properties);
+		},
+
+		/**
+		 * Track an event happening on this page
+		 *
+		 * @param string category The name you supply for the group of objects you want to track
+		 * @param string action A string that is uniquely paired with each category, and commonly used to define the type of user interaction for the web object
+		 * @param string properties (optional) Object for aditional information, eg application data like application user id, test group.
+		 */
+		logEventObject: function (eventObject) {
+			var category = null;
+	    var action = null;
+	    var properties = {}
+			for (key in eventObject) {
+	      if (key == "category") {
+	        category = eventObject[key];
+	      } else if (key == "action") {
+	        action = eventObject[key];
+	      } else {
+	        properties[key] = eventObject[key];
+	      }
+	    }
 			logStructEvent(category, action, properties);
 		},
 	}

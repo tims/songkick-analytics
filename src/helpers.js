@@ -1,8 +1,10 @@
 /*
- * JavaScript tracker for SnowPlow: helpers.js
+ * JavaScript tracker for Songkick
  * 
- * Significant portions copyright 2010 Anthon Pang. Remainder copyright 
- * 2012-2013 SnowPlow Analytics Ltd. All rights reserved. 
+ * Significant portions copyright 2010 Anthon Pang. 
+ * Significant portions copyright 2012-2013 SnowPlow Analytics Ltd.
+ * Remainder copyright 2013 Songkick.com.
+ * All rights reserved. 
  * 
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are 
@@ -15,9 +17,10 @@
  *   notice, this list of conditions and the following disclaimer in the 
  *   documentation and/or other materials provided with the distribution. 
  *
- * * Neither the name of Anthon Pang nor SnowPlow Analytics Ltd nor the
- *   names of their contributors may be used to endorse or promote products
- *   derived from this software without specific prior written permission. 
+ * * Neither the name of Anthon Pang nor SnowPlow Analytics Ltd 
+ *   nor Songkick.com nor the names of their contributors may be used to 
+ *   endorse or promote products derived from this software without 
+ *   specific prior written permission. 
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
@@ -35,14 +38,14 @@
 /*
  * Is property defined?
  */
-SnowPlow.isDefined = function (property) {
+SkAnalytics.isDefined = function (property) {
 	return typeof property !== 'undefined';
 }
 
 /*
  * Is property a function?
  */
-SnowPlow.isFunction = function (property) {
+SkAnalytics.isFunction = function (property) {
 	return typeof property === 'function';
 }
 
@@ -51,33 +54,33 @@ SnowPlow.isFunction = function (property) {
  *
  * @return bool Returns true if property is null, an Object, or subclass of Object (i.e., an instanceof String, Date, etc.)
  */
-SnowPlow.isObject = function (property) {
+SkAnalytics.isObject = function (property) {
 	return typeof property === 'object';
 }
 
 /*
  * Is property a string?
  */
-SnowPlow.isString = function (property) {
+SkAnalytics.isString = function (property) {
 	return typeof property === 'string' || property instanceof String;
 }
 
 /*
  * UTF-8 encoding
  */
-SnowPlow.encodeUtf8 = function (argString) {
-	return SnowPlow.decodeUrl(SnowPlow.encodeWrapper(argString));
+SkAnalytics.encodeUtf8 = function (argString) {
+	return SkAnalytics.decodeUrl(SkAnalytics.encodeWrapper(argString));
 }
 
 /**
  * Cleans up the page title
  */
-SnowPlow.fixupTitle = function (title) {
-	if (!SnowPlow.isString(title)) {
+SkAnalytics.fixupTitle = function (title) {
+	if (!SkAnalytics.isString(title)) {
 		title = title.text || '';
 
-		var tmp = SnowPlow.documentAlias.getElementsByTagName('title');
-		if (tmp && SnowPlow.isDefined(tmp[0])) {
+		var tmp = SkAnalytics.documentAlias.getElementsByTagName('title');
+		if (tmp && SkAnalytics.isDefined(tmp[0])) {
 			title = tmp[0].text;
 		}
 	}
@@ -87,7 +90,7 @@ SnowPlow.fixupTitle = function (title) {
 /*
  * Extract hostname from URL
  */
-SnowPlow.getHostName = function (url) {
+SkAnalytics.getHostName = function (url) {
 	// scheme : // [username [: password] @] hostname [: port] [/ [path] [? query] [# fragment]]
 	var e = new RegExp('^(?:(?:https?|ftp):)/*(?:[^@]+@)?([^:/#]+)'),
 		matches = e.exec(url);
@@ -99,7 +102,7 @@ SnowPlow.getHostName = function (url) {
  * Fix-up URL when page rendered from search engine cache or translated page.
  * TODO: it would be nice to generalise this and/or move into the ETL phase.
  */
-SnowPlow.fixupUrl = function (hostName, href, referrer) {
+SkAnalytics.fixupUrl = function (hostName, href, referrer) {
 	/*
 	 * Extract parameter from URL
 	 */
@@ -110,7 +113,7 @@ SnowPlow.fixupUrl = function (hostName, href, referrer) {
 			f = new RegExp('(?:^|&)' + name + '=([^&]*)'),
 			result = matches ? f.exec(matches[1]) : 0;
 
-		return result ? SnowPlow.decodeWrapper(result[1]) : '';
+		return result ? SkAnalytics.decodeWrapper(result[1]) : '';
 	}
 
 	if (hostName === 'translate.googleusercontent.com') {		// Google
@@ -118,12 +121,12 @@ SnowPlow.fixupUrl = function (hostName, href, referrer) {
 			referrer = href;
 		}
 		href = getParameter(href, 'u');
-		hostName = SnowPlow.getHostName(href);
+		hostName = SkAnalytics.getHostName(href);
 	} else if (hostName === 'cc.bingj.com' ||					// Bing
 			hostName === 'webcache.googleusercontent.com' ||	// Google
 			hostName.slice(0, 5) === '74.6.') {					// Yahoo (via Inktomi 74.6.0.0/16)
-		href = SnowPlow.documentAlias.links[0].href;
-		hostName = SnowPlow.getHostName(href);
+		href = SkAnalytics.documentAlias.links[0].href;
+		hostName = SkAnalytics.getHostName(href);
 	}
 	return [hostName, href, referrer];
 }
@@ -131,7 +134,7 @@ SnowPlow.fixupUrl = function (hostName, href, referrer) {
 /*
  * Fix-up domain
  */
-SnowPlow.fixupDomain = function (domain) {
+SkAnalytics.fixupDomain = function (domain) {
 	var dl = domain.length;
 
 	// remove trailing '.'
@@ -148,22 +151,22 @@ SnowPlow.fixupDomain = function (domain) {
 /*
  * Get page referrer
  */
-SnowPlow.getReferrer = function () {
+SkAnalytics.getReferrer = function () {
 	var referrer = '';
 
 	try {
-		referrer = SnowPlow.windowAlias.top.document.referrer;
+		referrer = SkAnalytics.windowAlias.top.document.referrer;
 	} catch (e) {
-		if (SnowPlow.windowAlias.parent) {
+		if (SkAnalytics.windowAlias.parent) {
 			try {
-				referrer = SnowPlow.windowAlias.parent.document.referrer;
+				referrer = SkAnalytics.windowAlias.parent.document.referrer;
 			} catch (e2) {
 				referrer = '';
 			}
 		}
 	}
 	if (referrer === '') {
-		referrer = SnowPlow.documentAlias.referrer;
+		referrer = SkAnalytics.documentAlias.referrer;
 	}
 
 	return referrer;
@@ -172,7 +175,7 @@ SnowPlow.getReferrer = function () {
 /*
  * Cross-browser helper function to add event handler
  */
-SnowPlow.addEventListener = function (element, eventType, eventHandler, useCapture) {
+SkAnalytics.addEventListener = function (element, eventType, eventHandler, useCapture) {
 	if (element.addEventListener) {
 		element.addEventListener(eventType, eventHandler, useCapture);
 		return true;
@@ -186,17 +189,17 @@ SnowPlow.addEventListener = function (element, eventType, eventHandler, useCaptu
 /*
  * Get cookie value
  */
-SnowPlow.getCookie = function (cookieName) {
+SkAnalytics.getCookie = function (cookieName) {
 	var cookiePattern = new RegExp('(^|;)[ ]*' + cookieName + '=([^;]*)'),
-			cookieMatch = cookiePattern.exec(SnowPlow.documentAlias.cookie);
+			cookieMatch = cookiePattern.exec(SkAnalytics.documentAlias.cookie);
 
-	return cookieMatch ? SnowPlow.decodeWrapper(cookieMatch[2]) : 0;
+	return cookieMatch ? SkAnalytics.decodeWrapper(cookieMatch[2]) : 0;
 }
 
 /*
  * Set cookie value
  */
-SnowPlow.setCookie = function (cookieName, value, msToExpire, path, domain, secure) {
+SkAnalytics.setCookie = function (cookieName, value, msToExpire, path, domain, secure) {
 	var expiryDate;
 
 	// relative time to expire in milliseconds
@@ -205,7 +208,7 @@ SnowPlow.setCookie = function (cookieName, value, msToExpire, path, domain, secu
 		expiryDate.setTime(expiryDate.getTime() + msToExpire);
 	}
 
-	SnowPlow.documentAlias.cookie = cookieName + '=' + SnowPlow.encodeWrapper(value) +
+	SkAnalytics.documentAlias.cookie = cookieName + '=' + SkAnalytics.encodeWrapper(value) +
 		(msToExpire ? ';expires=' + expiryDate.toGMTString() : '') +
 		';path=' + (path || '/') +
 		(domain ? ';domain=' + domain : '') +
@@ -215,15 +218,15 @@ SnowPlow.setCookie = function (cookieName, value, msToExpire, path, domain, secu
 /*
  * Call plugin hook methods
  */
-SnowPlow.executePluginMethod = function (methodName, callback) {
+SkAnalytics.executePluginMethod = function (methodName, callback) {
 	var result = '',
 			i,
 			pluginMethod;
 
-	for (i in SnowPlow.plugins) {
-		if (Object.prototype.hasOwnProperty.call(SnowPlow.plugins, i)) {
-			pluginMethod = SnowPlow.plugins[i][methodName];
-			if (SnowPlow.isFunction(pluginMethod)) {
+	for (i in SkAnalytics.plugins) {
+		if (Object.prototype.hasOwnProperty.call(SkAnalytics.plugins, i)) {
+			pluginMethod = SkAnalytics.plugins[i][methodName];
+			if (SkAnalytics.isFunction(pluginMethod)) {
 				result += pluginMethod(callback);
 			}
 		}

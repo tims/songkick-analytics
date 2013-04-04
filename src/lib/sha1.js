@@ -18,7 +18,7 @@
  *    jslinted by: Anthon Pang (http://piwik.org)
  */
 
-SnowPlow.sha1 = function sha1(str) {
+SkAnalytics.sha1 = function sha1(str) {
 	var
 		rotate_left = function (n, s) {
 			return (n << s) | (n >>> (32 - s));
@@ -54,7 +54,7 @@ SnowPlow.sha1 = function sha1(str) {
 		str_len,
 		word_array = [];
 
-	str = SnowPlow.encodeUtf8(str);
+	str = SkAnalytics.encodeUtf8(str);
 	str_len = str.length;
 
 	for (i = 0; i < str_len - 3; i += 4) {

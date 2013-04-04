@@ -1,8 +1,10 @@
 /*
- * JavaScript tracker for SnowPlow: constructor.js
+ * JavaScript tracker for Songkick
  * 
- * Significant portions copyright 2010 Anthon Pang. Remainder copyright 
- * 2012-2013 SnowPlow Analytics Ltd. All rights reserved. 
+ * Significant portions copyright 2010 Anthon Pang. 
+ * Significant portions copyright 2012-2013 SnowPlow Analytics Ltd.
+ * Remainder copyright 2013 Songkick.com.
+ * All rights reserved. 
  * 
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are 
@@ -15,9 +17,10 @@
  *   notice, this list of conditions and the following disclaimer in the 
  *   documentation and/or other materials provided with the distribution. 
  *
- * * Neither the name of Anthon Pang nor SnowPlow Analytics Ltd nor the
- *   names of their contributors may be used to endorse or promote products
- *   derived from this software without specific prior written permission. 
+ * * Neither the name of Anthon Pang nor SnowPlow Analytics Ltd 
+ *   nor Songkick.com nor the names of their contributors may be used to 
+ *   endorse or promote products derived from this software without 
+ *   specific prior written permission. 
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
@@ -32,13 +35,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* Extend SnowPlow object */
+/* Extend SkAnalytics object */
 (function() {
-	var snowPlow = SnowPlow.build();
-	for (prop in snowPlow) {
-		if (snowPlow.hasOwnProperty(prop)) {
-			if (SnowPlow[prop] === undefined) {
-				SnowPlow[prop] = snowPlow[prop];
+	var skAnalytics = SkAnalytics.build();
+	for (prop in skAnalytics) {
+		if (skAnalytics.hasOwnProperty(prop)) {
+			if (SkAnalytics[prop] === undefined) {
+				SkAnalytics[prop] = skAnalytics[prop];
 			}
 		}
 	}

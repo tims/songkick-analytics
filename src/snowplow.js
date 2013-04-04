@@ -1,8 +1,10 @@
 /*
- * JavaScript tracker for SnowPlow: snowplow.js
+ * JavaScript tracker for Songkick
  * 
- * Significant portions copyright 2010 Anthon Pang. Remainder copyright 
- * 2012-2013 SnowPlow Analytics Ltd. All rights reserved. 
+ * Significant portions copyright 2010 Anthon Pang. 
+ * Significant portions copyright 2012-2013 SnowPlow Analytics Ltd.
+ * Remainder copyright 2013 Songkick.com.
+ * All rights reserved. 
  * 
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are 
@@ -15,9 +17,10 @@
  *   notice, this list of conditions and the following disclaimer in the 
  *   documentation and/or other materials provided with the distribution. 
  *
- * * Neither the name of Anthon Pang nor SnowPlow Analytics Ltd nor the
- *   names of their contributors may be used to endorse or promote products
- *   derived from this software without specific prior written permission. 
+ * * Neither the name of Anthon Pang nor SnowPlow Analytics Ltd 
+ *   nor Songkick.com nor the names of their contributors may be used to 
+ *   endorse or promote products derived from this software without 
+ *   specific prior written permission. 
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
@@ -71,7 +74,7 @@
 	addPlugin, getAsyncTracker
 */
 
-SnowPlow.build = function () {
+SkAnalytics.build = function () {
 		"use strict";
 
 		/************************************************************
@@ -93,10 +96,10 @@ SnowPlow.build = function () {
 				parameterArray = arguments[i];
 				f = parameterArray.shift();
 
-				if (SnowPlow.isString(f)) {
-					SnowPlow.asyncTracker[f].apply(SnowPlow.asyncTracker, parameterArray);
+				if (SkAnalytics.isString(f)) {
+					SkAnalytics.asyncTracker[f].apply(SkAnalytics.asyncTracker, parameterArray);
 				} else {
-					f.apply(SnowPlow.asyncTracker, parameterArray);
+					f.apply(SkAnalytics.asyncTracker, parameterArray);
 				}
 			}
 		}
@@ -111,18 +114,18 @@ SnowPlow.build = function () {
 		function beforeUnloadHandler() {
 			var now;
 
-			SnowPlow.executePluginMethod('unload');
+			SkAnalytics.executePluginMethod('unload');
 
 			/*
 			 * Delay/pause (blocks UI)
 			 */
-			if (SnowPlow.expireDateTime) {
+			if (SkAnalytics.expireDateTime) {
 				// the things we do for backwards compatibility...
 				// in ECMA-262 5th ed., we could simply use:
-				//     while (Date.now() < SnowPlow.expireDateTime) { }
+				//     while (Date.now() < SkAnalytics.expireDateTime) { }
 				do {
 					now = new Date();
-				} while (now.getTimeAlias() < SnowPlow.expireDateTime);
+				} while (now.getTimeAlias() < SkAnalytics.expireDateTime);
 			}
 		}
 
@@ -132,11 +135,11 @@ SnowPlow.build = function () {
 		function loadHandler() {
 			var i;
 
-			if (!SnowPlow.hasLoaded) {
-				SnowPlow.hasLoaded = true;
-				SnowPlow.executePluginMethod('load');
-				for (i = 0; i < SnowPlow.registeredOnLoadHandlers.length; i++) {
-					SnowPlow.registeredOnLoadHandlers[i]();
+			if (!SkAnalytics.hasLoaded) {
+				SkAnalytics.hasLoaded = true;
+				SkAnalytics.executePluginMethod('load');
+				for (i = 0; i < SkAnalytics.registeredOnLoadHandlers.length; i++) {
+					SkAnalytics.registeredOnLoadHandlers[i]();
 				}
 			}
 			return true;
@@ -148,24 +151,24 @@ SnowPlow.build = function () {
 		function addReadyListener() {
 			var _timer;
 
-			if (SnowPlow.documentAlias.addEventListener) {
-				SnowPlow.addEventListener(SnowPlow.documentAlias, 'DOMContentLoaded', function ready() {
-					SnowPlow.documentAlias.removeEventListener('DOMContentLoaded', ready, false);
+			if (SkAnalytics.documentAlias.addEventListener) {
+				SkAnalytics.addEventListener(SkAnalytics.documentAlias, 'DOMContentLoaded', function ready() {
+					SkAnalytics.documentAlias.removeEventListener('DOMContentLoaded', ready, false);
 					loadHandler();
 				});
-			} else if (SnowPlow.documentAlias.attachEvent) {
-				SnowPlow.documentAlias.attachEvent('onreadystatechange', function ready() {
-					if (SnowPlow.documentAlias.readyState === 'complete') {
-						SnowPlow.documentAlias.detachEvent('onreadystatechange', ready);
+			} else if (SkAnalytics.documentAlias.attachEvent) {
+				SkAnalytics.documentAlias.attachEvent('onreadystatechange', function ready() {
+					if (SkAnalytics.documentAlias.readyState === 'complete') {
+						SkAnalytics.documentAlias.detachEvent('onreadystatechange', ready);
 						loadHandler();
 					}
 				});
 
-				if (SnowPlow.documentAlias.documentElement.doScroll && SnowPlow.windowAlias === SnowPlow.windowAlias.top) {
+				if (SkAnalytics.documentAlias.documentElement.doScroll && SkAnalytics.windowAlias === SkAnalytics.windowAlias.top) {
 					(function ready() {
-						if (!SnowPlow.hasLoaded) {
+						if (!SkAnalytics.hasLoaded) {
 							try {
-								SnowPlow.documentAlias.documentElement.doScroll('left');
+								SkAnalytics.documentAlias.documentElement.doScroll('left');
 							} catch (error) {
 								setTimeout(ready, 0);
 								return;
@@ -177,9 +180,9 @@ SnowPlow.build = function () {
 			}
 
 			// sniff for older WebKit versions
-			if ((new RegExp('WebKit')).test(SnowPlow.navigatorAlias.userAgent)) {
+			if ((new RegExp('WebKit')).test(SkAnalytics.navigatorAlias.userAgent)) {
 				_timer = setInterval(function () {
-					if (SnowPlow.hasLoaded || /loaded|complete/.test(SnowPlow.documentAlias.readyState)) {
+					if (SkAnalytics.hasLoaded || /loaded|complete/.test(SkAnalytics.documentAlias.readyState)) {
 						clearInterval(_timer);
 						loadHandler();
 					}
@@ -187,7 +190,7 @@ SnowPlow.build = function () {
 			}
 
 			// fallback
-			SnowPlow.addEventListener(SnowPlow.windowAlias, 'load', loadHandler, false);
+			SkAnalytics.addEventListener(SkAnalytics.windowAlias, 'load', loadHandler, false);
 		}
 
 
@@ -207,13 +210,13 @@ SnowPlow.build = function () {
 		 * Constructor
 		 ************************************************************/
 
-		// initialize the SnowPlow singleton
-		SnowPlow.addEventListener(SnowPlow.windowAlias, 'beforeunload', beforeUnloadHandler, false);
+		// initialize the SkAnalytics singleton
+		SkAnalytics.addEventListener(SkAnalytics.windowAlias, 'beforeunload', beforeUnloadHandler, false);
 		addReadyListener();
 
 		Date.prototype.getTimeAlias = Date.prototype.getTime;
 
-		SnowPlow.asyncTracker = new SnowPlow.Tracker();
+		SkAnalytics.asyncTracker = new SkAnalytics.Tracker();
 
 		for (var i = 0; i < _snaq.length; i++) {
 			apply(_snaq[i]);
@@ -235,7 +238,7 @@ SnowPlow.build = function () {
 		* @param Object pluginObj
 		*/
 		addPlugin: function (pluginName, pluginObj) {
-			SnowPlow.plugins[pluginName] = pluginObj;
+			SkAnalytics.plugins[pluginName] = pluginObj;
 		},
 
 		/**
@@ -245,7 +248,7 @@ SnowPlow.build = function () {
 		* @param string distSubdomain The subdomain on your CloudFront collector's distribution
 		*/
 		getTrackerCf: function (distSubdomain) {
-			return new SnowPlow.Tracker({cf: distSubdomain});
+			return new SkAnalytics.Tracker({cf: distSubdomain});
 		},
 
 		/**
@@ -255,7 +258,7 @@ SnowPlow.build = function () {
 		* @param string rawUrl The collector URL minus protocol
 		*/
 		getTrackerUrl: function (rawUrl) {
-			return new SnowPlow.Tracker({url: rawUrl});
+			return new SkAnalytics.Tracker({url: rawUrl});
 		},
 
 		/**
@@ -264,7 +267,7 @@ SnowPlow.build = function () {
 		* @return Tracker
 		*/
 		getAsyncTracker: function () {
-			return SnowPlow.asyncTracker;
+			return SkAnalytics.asyncTracker;
 		}
 	};
 };
