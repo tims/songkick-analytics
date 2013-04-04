@@ -578,10 +578,10 @@ SnowPlow.Tracker = function Tracker(argmap) {
 		sb.addRaw('vp', detectViewport());
 		sb.addRaw('ds', detectDocumentSize());
 		sb.addRaw('vid', visitCount);
-		sb.addRaw('duid', _domainUserId); // Set to our local variable
+		sb.addRaw('uid', _domainUserId); // Set to our local variable
 
 		// Encode all these
-		sb.add('uid', businessUserId); // Business-defined user ID
+		sb.add('buid', businessUserId); // Business-defined user ID
 
 		// Adds with custom conditions
 		if (configReferrerUrl.length) sb.add('refr', purify(configReferrerUrl));
