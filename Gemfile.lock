@@ -1,0 +1,15 @@
+GEM
+  specs:
+    cmdparse (2.0.5)
+    juicer (1.0.20)
+      cmdparse
+      nokogiri (>= 1.5.0)
+      rubyzip
+    nokogiri (1.5.9)
+    rubyzip (0.9.9)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  juicer (~> 1.0.20)
