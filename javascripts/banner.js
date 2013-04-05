@@ -2,7 +2,7 @@
  * SongkickAnalytics
  *
  * @description A cut down version of the SnowPlow tracker for sending analytics events, catered to Songkick's needs.
- * @version     0.11.1
+ * @version     0.0.1
  * @author      Alex Dean, Simon Andersson, Anthon Pang, Tim Sell
  * @copyright   Anthon Pang, SnowPlow Analytics Ltd, Songkick.com
  * @license     Simplified BSD

@@ -34,19 +34,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// SkAnalytics Asynchronous Queue
-var _snaq = _snaq || [];
 
 /**
  * SkAnalytics namespace.
  * Add classes and functions in this namespace.
  */
-var SkAnalytics = SkAnalytics || function() {
+ /*jslink browser */
+var SkAnalytics = SkAnalytics || (function () {
 	var windowAlias = window;
 	return {
 
 		/* Tracker identifier with version */
-		version: 'js-0.11.1', // Update banner.js too
+		version: '0.0.1', // Update banner.js too
 
 		expireDateTime: null,
 
@@ -73,7 +72,10 @@ var SkAnalytics = SkAnalytics || function() {
 		decodeUrl: unescape,
 
 		/* Asynchronous tracker */
-		asyncTracker: null
-	}
-}();
+		asyncTracker: null,
+
+		/* Asynchronous tracker event queue */
+		asyncQueue: null
+	};
+}());
 

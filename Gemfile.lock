@@ -1,15 +1,24 @@
 GEM
+  remote: https://rubygems.org/
   specs:
-    cmdparse (2.0.5)
-    juicer (1.0.20)
-      cmdparse
-      nokogiri (>= 1.5.0)
-      rubyzip
-    nokogiri (1.5.9)
-    rubyzip (0.9.9)
+    execjs (1.4.0)
+      multi_json (~> 1.0)
+    hike (1.2.1)
+    multi_json (1.7.2)
+    rack (1.5.2)
+    sprockets (2.9.0)
+      hike (~> 1.2)
+      multi_json (~> 1.0)
+      rack (~> 1.0)
+      tilt (~> 1.1, != 1.3.0)
+    tilt (1.3.6)
+    uglifier (1.3.0)
+      execjs (>= 0.3.0)
+      multi_json (~> 1.0, >= 1.0.2)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  juicer (~> 1.0.20)
+  sprockets
+  uglifier

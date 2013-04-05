@@ -35,19 +35,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*global SkAnalytics */
+
 /*
  * Is property defined?
  */
 SkAnalytics.isDefined = function (property) {
 	return typeof property !== 'undefined';
-}
+};
 
 /*
  * Is property a function?
  */
 SkAnalytics.isFunction = function (property) {
 	return typeof property === 'function';
-}
+};
 
 /*
  * Is property an object?
@@ -56,21 +58,21 @@ SkAnalytics.isFunction = function (property) {
  */
 SkAnalytics.isObject = function (property) {
 	return typeof property === 'object';
-}
+};
 
 /*
  * Is property a string?
  */
 SkAnalytics.isString = function (property) {
 	return typeof property === 'string' || property instanceof String;
-}
+};
 
 /*
  * UTF-8 encoding
  */
 SkAnalytics.encodeUtf8 = function (argString) {
 	return SkAnalytics.decodeUrl(SkAnalytics.encodeWrapper(argString));
-}
+};
 
 /**
  * Cleans up the page title
@@ -85,7 +87,7 @@ SkAnalytics.fixupTitle = function (title) {
 		}
 	}
 	return title;
-}
+};
 
 /*
  * Extract hostname from URL
@@ -96,7 +98,7 @@ SkAnalytics.getHostName = function (url) {
 		matches = e.exec(url);
 
 	return matches ? matches[1] : url;
-}
+};
 
 /*
  * Fix-up URL when page rendered from search engine cache or translated page.
@@ -129,16 +131,16 @@ SkAnalytics.fixupUrl = function (hostName, href, referrer) {
 		hostName = SkAnalytics.getHostName(href);
 	}
 	return [hostName, href, referrer];
-}
+};
 
 /*
  * Fix-up domain
  */
 SkAnalytics.fixupDomain = function (domain) {
 	var dl = domain.length;
-
+	dl -= 1;
 	// remove trailing '.'
-	if (domain.charAt(--dl) === '.') {
+	if (domain.charAt(dl) === '.') {
 		domain = domain.slice(0, dl);
 	}
 	// remove leading '*'
@@ -146,7 +148,7 @@ SkAnalytics.fixupDomain = function (domain) {
 		domain = domain.slice(1);
 	}
 	return domain;
-}
+};
 
 /*
  * Get page referrer
@@ -170,7 +172,7 @@ SkAnalytics.getReferrer = function () {
 	}
 
 	return referrer;
-}
+};
 
 /*
  * Cross-browser helper function to add event handler
@@ -184,7 +186,7 @@ SkAnalytics.addEventListener = function (element, eventType, eventHandler, useCa
 		return element.attachEvent('on' + eventType, eventHandler);
 	}
 	element['on' + eventType] = eventHandler;
-}
+};
 
 /*
  * Get cookie value
@@ -194,7 +196,7 @@ SkAnalytics.getCookie = function (cookieName) {
 			cookieMatch = cookiePattern.exec(SkAnalytics.documentAlias.cookie);
 
 	return cookieMatch ? SkAnalytics.decodeWrapper(cookieMatch[2]) : 0;
-}
+};
 
 /*
  * Set cookie value
@@ -213,7 +215,7 @@ SkAnalytics.setCookie = function (cookieName, value, msToExpire, path, domain, s
 		';path=' + (path || '/') +
 		(domain ? ';domain=' + domain : '') +
 		(secure ? ';secure' : '');
-}
+};
 
 /*
  * Call plugin hook methods
@@ -233,5 +235,5 @@ SkAnalytics.executePluginMethod = function (methodName, callback) {
 	}
 
 	return result;
-}
+};
 

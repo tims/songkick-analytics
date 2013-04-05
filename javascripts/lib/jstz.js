@@ -14,8 +14,8 @@
 /*jslint undef: true */
 /*global console*/
 /*global exports*/
+/*global SkAnalytics*/
 /*version 2012-05-10*/
-
 SkAnalytics.jstz = (function () {
     /**
      * Namespace to hold all the code for timezone detection.

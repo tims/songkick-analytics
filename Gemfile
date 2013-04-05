@@ -1,1 +1,3 @@
-gem 'juicer',  '~> 1.0.20'
+source "https://rubygems.org"
+gem 'sprockets'
+gem 'uglifier'

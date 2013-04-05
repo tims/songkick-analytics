@@ -18,6 +18,8 @@
  *    jslinted by: Anthon Pang (http://piwik.org)
  */
 
+/*jslint plusplus: true, bitwise: true */
+/*global SkAnalytics*/
 SkAnalytics.sha1 = function sha1(str) {
 	var
 		rotate_left = function (n, s) {
