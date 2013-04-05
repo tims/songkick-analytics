@@ -1,0 +1,1 @@
+while read F; do cat $F; done < dependencies.txt
