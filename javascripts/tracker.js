@@ -1009,7 +1009,7 @@ SkAnalytics.Tracker = function Tracker(argmap) {
 	 * Returns visitor timezone
 	 */
 	function detectTimezone() {
-		var tz = jstz.determine();  
+		var tz = SkAnalytics.jstz.determine();  
         	return (typeof (tz) === 'undefined') ? '' : tz.name();
 	}
 

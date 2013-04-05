@@ -14,7 +14,7 @@
  *
  * Songkick's version
  * https://github.com/songkick/songkick-analytics
- * /
+ */
 
 /*
  * Browser [In]Compatibility

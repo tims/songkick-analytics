@@ -74,6 +74,16 @@
 	addPlugin, getAsyncTracker
 */
 
+/**
+ * @depends banner.js
+ * @depends init.js
+ * @depends lib/json.js
+ * @depends lib/jstz.js
+ * @depends helpers.js
+ * @depends lib/sha1.js
+ * @depends lib/murmur.js
+ * @depends tracker.js
+ */
 SkAnalytics.build = function () {
 		"use strict";
 
@@ -271,4 +281,16 @@ SkAnalytics.build = function () {
 		}
 	};
 };
+
+(function() {
+	var skAnalytics = SkAnalytics.build();
+	for (prop in skAnalytics) {
+		if (skAnalytics.hasOwnProperty(prop)) {
+			if (SkAnalytics[prop] === undefined) {
+				SkAnalytics[prop] = skAnalytics[prop];
+			}
+		}
+	}
+}());
+
 
