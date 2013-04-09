@@ -1,3 +1,5 @@
 bundle install --local --path vendor/bundle
 echo "Running sprockets"
-bundle exec sprockets --js-compressor=uglifier -Ijavascripts javascripts/songkick-analytics.js -o build/
+mkdir -pv target
+cat javascripts/banner.js > target/songkick-analytics.js
+bundle exec sprockets -Ijavascripts javascripts/songkick-analytics.js >> target/songkick-analytics.js
