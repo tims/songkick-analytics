@@ -97,18 +97,25 @@ SongkickAnalytics.prototype.serializeQueryParams = function(object) {
 */
 SongkickAnalytics.prototype.init = function() {
   var instance = this;
-  var logAnalyticsData = function(data, eventType) {
+  var getAnalyticsDataForCategory = function(data, eventType) {
     var analyticsData = instance.getAnalyticsData(data);
     if (!("category" in analyticsData)) {
       analyticsData.category = eventType;
     }
+    return analyticsData;
     instance.logEventObject(analyticsData);
   }
   $(".analytics-click").click(function() {
-    logAnalyticsData($(this).data(), "click");
+    var analyticsData = getAnalyticsDataForCategory($(this).data(), "click")
+    instance.logEventObject(analyticsData);
   });
   $(".analytics-change").change(function() {
-    logAnalyticsData($(this).data(), "change");
+    var analyticsData = getAnalyticsDataForCategory($(this).data(), "change")
+    var selected = $(this).find("option:selected");
+    if (selected && selected.length === 1) {
+      analyticsData.selected = selected.val();
+    }
+    instance.logEventObject(analyticsData);
   });
   this._analyticsCookie = this.initAnalyticsCookie();
 }
