@@ -1,6 +1,7 @@
 var SongkickAnalytics = function(_collectorUrl, pageProperties) {
   this._cookiePrefix = "_skan_"
   this._cookieVersion = "1"; //increment to start new cookies.
+  this._cookieExpiresMs = 63072000000;
   this._collectorUrl = _collectorUrl;
   this._pageProperties = pageProperties;
   this._analyticsCookie = null;
@@ -49,7 +50,9 @@ SongkickAnalytics.prototype.logEventObject = function(eventObject) {
 SongkickAnalytics.prototype.logEvent = function(category, action, properties) {
   var requestObj = this.getEventRequestObject(category, action, properties)
   var request = this.serializeQueryParams(requestObj);
-  if (this._collectorUrl === null) {
+  if (typeof this._collectorUrl  === 'undefined' ||
+      typeof this._collectorUrl  === null) 
+  {
     throw "No collector url set, cannot log events";
   }
   this.loadImage(this._collectorUrl + '?' + request);
@@ -110,15 +113,6 @@ SongkickAnalytics.prototype.init = function() {
   this._analyticsCookie = this.initAnalyticsCookie();
 }
 
-/*
- * Sets the Visitor ID cookie: either the first time loadDomainUserIdCookie is called
- * or when there is a new visit or a new page view
- */
-function setDomainUserIdCookie(_domainUserId, createTs, visitCount, nowTs, lastVisitTs) {
-  SongkickAnalytics.setCookie(getCookieName('id'), _domainUserId + '.' + createTs + '.' + visitCount + '.' + nowTs + '.' + lastVisitTs, configVisitorCookieTimeout, configCookiePath, configCookieDomain);
-}
-
-
 SongkickAnalytics.prototype.deserializeCookie = function(cookieValue) {
   var cookieValues = cookieValue.split('.');
   var cookieData = {};
@@ -136,7 +130,7 @@ SongkickAnalytics.prototype.serializeCookie = function(cookieData) {
 SongkickAnalytics.prototype.initAnalyticsCookie = function() {
   var nowTs = Math.round(new Date().getTime() / 1000);
   var cookieName = this.getAnalyticsCookieName();
-  var cookieValue = $.cookie(cookieName);
+  var cookieValue = this.getCookie(cookieName);
   var cookieData = {};
 
   if (cookieValue) {
@@ -152,7 +146,7 @@ SongkickAnalytics.prototype.initAnalyticsCookie = function() {
     }
   }
   cookieValue = this.serializeCookie(cookieData);
-  $.cookie(cookieName, cookieValue);
+  this.setCookie(cookieName, cookieValue, this._cookieExpiresMs);
   return cookieData;
 }
 
@@ -265,8 +259,8 @@ SongkickAnalytics.prototype.getBrowserFeatures = function() {
   if (typeof navigator.cookieEnabled !== 'undefined') {
     features.cookie = navigator.cookieEnabled ? '1' : '0'
   } else {
-    $.cookie('test', '1');
-    features.cookie = ($.cookie('test') === '1') ? '1' : '0';
+    this.setCookie('test', '1')
+    features.cookie = (this.getCookie('test') === '1') ? '1' : '0';
   }
 
   return features;
@@ -299,3 +293,28 @@ SongkickAnalytics.prototype.getReferrer = function() {
   return referrer;
 };
 
+/*
+ * Get cookie value
+ */
+SongkickAnalytics.prototype.getCookie = function (cookieName) {
+  var cookiePattern = new RegExp('(^|;)[ ]*' + cookieName + '=([^;]*)'),
+      cookieMatch = cookiePattern.exec(document.cookie);
+  return cookieMatch ? decodeURIComponent(cookieMatch[2]) : 0;
+};
+
+/*
+ * Set cookie value
+ */
+SongkickAnalytics.prototype.setCookie = function (cookieName, value, msToExpire, path, domain, secure) {
+  var expiryDate;
+  // relative time to expire in milliseconds
+  if (msToExpire) {
+    expiryDate = new Date();
+    expiryDate.setTime(expiryDate.getTime() + msToExpire);
+  }
+  document.cookie = cookieName + '=' + encodeURIComponent(value) +
+    (msToExpire ? ';expires=' + expiryDate.toGMTString() : '') +
+    ';path=' + (path || '/') +
+    (domain ? ';domain=' + domain : '') +
+    (secure ? ';secure' : '');
+};
