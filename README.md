@@ -1,5 +1,7 @@
 # Songkick Analytics
 
+## Intro
+
 This is our analytics framework. It provides a simple API for
 recording user behaviour, and is designed to make it as easy as
 possible to instrument everything which might be of interest when
@@ -7,9 +9,14 @@ trying to understand how people interact with all Songkick web
 properties. Currently the framework does not cover non-web
 applications or server side events.
 
-This framework aims to provide an abstraction layer on top of the
-underlying logging framework. For a more technical descripion of the
-process see <LINK NEEDED>.
+## Deployment
+
+To deploy a new version, increment the version number in the Rakefile and
+
+    bundle exec rake default deploy
+
+Then for each project which uses songkick-analytics be sure to increment 
+the version fetched.
 
 ## The Analytics Domain Model
 
@@ -37,51 +44,68 @@ Typlically all pages will implement at least the following:
 project specific code, and may be upgraded centrally. No breaking
 changes will ever be made without incrementing the version number.
 
-2. Initialize the framework (syntax TBD).
+2. Initialize the framework.
 
-3. Register the page load event (syntax TBD).
+    <script type="text/javascript" src="//d20omhqjbcr74g.cloudfront.net/javascripts/songkick-analytics.0.1.4.min.js"></script>
+    <script type="text/javascript">
+      var page_properties = {user_id: 12345}
+      var songkickAnalytics = new SongkickAnalytics("//localhost:8000/pixel.png", page_properties);
+      songkickAnalytics.init()
+    </script>
+    
+
+3. Send the page load event (syntax TBD).
+
+    var category = "page";
+    var action = "load";
+    var properties = {something: 1234};
+    songkickAnalytics.logEvent(category, action, properties);
 
 ### Logging Additional Events
 
 #### The Easy Way
 
 The JavaScript library recognises a number of data attributes which
-can be used to indicate that DOM events should be logged (details TBC).
+can be used to indicate that DOM events should be logged.
+
+To log onClick events:
+
+    <button class="analytics-click" data-analytics-category="click" data-analytics-action="example1" data-analytics-item-id="123">Click this and we'll send an analytics event</button>
+
+This will send `category="click"` `action="example1"` and `properties={itemId:"123"}`
+
+To log onChange events:
+
+    <select class="analytics-change" data-analytics-category="change" data-analytics-action="example2" data-analytics-test="123">
+      <option value="A">Option A</option>
+      <option value="B">Option B</option>
+    </select>
+
+If the selector is changed to option A, this will send `category="change"` `action="example2"` and `properties={selected:"A", test:"123"}`.
 
 #### Manually Logging Events
 
-Alternatively, events can be manually triggered by scripts (syntax TBC
-- make it possible to send multiple events at once here).
+    var category = "topic";
+    var action = "thing";
+    var properties = {};
+    songkickAnalytics.logEvent(category, action, properties);
 
 #### Tying Events To Page Load
 
-Finally, additional events can be specified at the same time as the
-page load event is recorded. (syntax TBC).
+Any properties set when creating the songkick analytics object will be added to every event sent.
 
-### Parameterised Events
-
-Page level parameters are specified at the time of library
-initialiation (syntax TBC).
-
-Page level parameters will be attached to all events logged from the
-page. Additional parameters can be specified when individual events
-are logged, either through data attributes (details TBC), or as
-arguments to the logEvent call (details TBC).
+    var page_properties = {user_id: 12345}
+    var songkickAnalytics = new SongkickAnalytics("//localhost:8000/pixel.png", page_properties);
 
 ### Instrumenting Split Tests
+
+(TBC)
 
 Split test groups are derived based on the unique UID combined with
 the name of the test. If this scheme is followed, it is not necessary
 to record split test group membership explicitly, only the exact
 period during which the test was active.  Group membership can
 subsequently be reconstructed at the time of analysis.
-
-### Page Model Support
-
-Server-side impementation is beyond the scope of this document, so
-this section should be considered as recommendations.
-
-(details TBC)
 
 ## Roadmap
 
