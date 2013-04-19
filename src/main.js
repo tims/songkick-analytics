@@ -21,7 +21,7 @@ SongkickAnalytics.prototype.getEventRequestObject = function(category, action, p
   }
   var requestObj = {
     uid: this._analyticsCookie.analyticsUserId,
-    url: window.location.href,
+    url: window.location.href,  
     refr: this.getReferrer(),
     ev_ca: category,
     ev_ac: action,
@@ -158,15 +158,14 @@ SongkickAnalytics.prototype.initAnalyticsCookie = function() {
 }
 
 // Domain - generate a pseudo-unique ID to fingerprint this user;
-// Note: this isn't a RFC4122-compliant UUID
 SongkickAnalytics.prototype.generateAnalyticsUserId = function() {
-  var nowTs = Math.round(new Date().getTime() / 1000);
+  var nowMillis = new Date().getTime();
   var browserFeatures = this.getBrowserFeatures();
   uid = this.sha1(
     (navigator.userAgent || '') +
     (navigator.platform || '') +
     JSON2.stringify(browserFeatures) +
-    nowTs
+    nowMillis
   ).slice(0, 16); // 16 hexits = 64 bits
   return uid
 }

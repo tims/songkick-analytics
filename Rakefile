@@ -2,7 +2,7 @@
 require 'aws/s3'
 require 'erb'
 
-version = "0.1.4"
+version = "0.1.5"
 
 task :default => [:compile, :minify]
 
