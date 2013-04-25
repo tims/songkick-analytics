@@ -15,14 +15,14 @@ To deploy a new version, increment the version number in the Rakefile and
 
     bundle exec rake default deploy
 
-Then for each project which uses songkick-analytics be sure to increment 
+Then for each project which uses songkick-analytics be sure to increment
 the version fetched.
 
 ## The Analytics Domain Model
 
 The core object is the Event. Each Event belongs to a category, which
 covers page load events, interactions with the page and application
-specific items (e.g. successful completion of a purchase). 
+specific items (e.g. successful completion of a purchase).
 
 Events should have semantic interpretations, and it's encouraged to
 send multiple events from the same interaction, for example it's a
@@ -40,7 +40,7 @@ we've got this right first.)
 
 Typlically all pages will implement at least the following:
 
-1. Load the JavaScript sorce from (URL). This is hosted separately to
+1. Load the JavaScript source from (URL). This is hosted separately to
 project specific code, and may be upgraded centrally. No breaking
 changes will ever be made without incrementing the version number.
 
@@ -52,7 +52,6 @@ changes will ever be made without incrementing the version number.
       var songkickAnalytics = new SongkickAnalytics("//localhost:8000/pixel.png", page_properties);
       songkickAnalytics.init()
     </script>
-    
 
 3. Send the page load event (syntax TBD).
 
