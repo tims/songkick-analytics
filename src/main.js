@@ -21,7 +21,7 @@ SongkickAnalytics.prototype.getEventRequestObject = function(category, action, p
   }
   var requestObj = {
     uid: this._analyticsCookie.analyticsUserId,
-    url: window.location.href,  
+    url: window.location.href,
     refr: this.getReferrer(),
     ev_ca: category,
     ev_ac: action,
@@ -51,7 +51,7 @@ SongkickAnalytics.prototype.logEvent = function(category, action, properties) {
   var requestObj = this.getEventRequestObject(category, action, properties)
   var request = this.serializeQueryParams(requestObj);
   if (typeof this._collectorUrl  === 'undefined' ||
-      typeof this._collectorUrl  === null) 
+      typeof this._collectorUrl  === null)
   {
     throw "No collector url set, cannot log events";
   }
@@ -88,11 +88,11 @@ SongkickAnalytics.prototype.serializeQueryParams = function(object) {
     var key = sortedKeys[i];
     props.push(encodeURIComponent(key) + "=" + encodeURIComponent(object[key]));
   }
-  return props.join("&");  
+  return props.join("&");
 }
 
-/* 
-* Register event tracking on elements with class="analytics-click" or class="analytics-change" 
+/*
+* Register event tracking on elements with class="analytics-click" or class="analytics-change"
 * and log all attributes prefixed with data-analytics- as event properties.
 */
 SongkickAnalytics.prototype.init = function() {
@@ -142,8 +142,13 @@ SongkickAnalytics.prototype.initAnalyticsCookie = function() {
 
   if (cookieValue) {
     cookieData = this.deserializeCookie(cookieValue);
-    cookieData.lastVisitTs = cookieData.currentTs;
-    cookieData.currentTs = nowTs;
+    if (cookieData.lastVisitTs == '-') {
+      cookieData.lastVisitTs = '';
+    }
+    else {
+      cookieData.lastVisitTs = cookieData.currentTs;
+      cookieData.currentTs = nowTs;
+    }
   } else {
     cookieData = {
       analyticsUserId: this.generateAnalyticsUserId(),
