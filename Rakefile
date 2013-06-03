@@ -2,7 +2,7 @@
 require 'aws/s3'
 require 'erb'
 
-version = "0.1.6"
+version = "0.2.0"
 
 task :default => [:compile, :minify]
 
@@ -36,8 +36,6 @@ task :deploy do
     :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
     :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
   )
-  #bucket = AWS::S3::Bucket.find('songkick')
-  
   ["songkick-analytics.#{version}", "songkick-analytics.#{version}.min"].each do |js|
     puts "uploading #{js}"
     AWS::S3::S3Object.store(

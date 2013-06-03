@@ -1,10 +1,14 @@
 var SongkickAnalytics = function(_collectorUrl, pageProperties) {
   this._cookiePrefix = "_skan_"
-  this._cookieVersion = "1"; //increment to start new cookies.
-  this._cookieExpiresMs = 63072000000;
+  this._cookieVersion = "2";  //increment to start new cookies.
+  this._cookieExpiresMs = 63072000000;  // 2 years
   this._collectorUrl = _collectorUrl;
   this._pageProperties = pageProperties;
   this._analyticsCookie = null;
+}
+
+SongkickAnalytics.prototype.getV1AnalyticsCookieName = function() {
+  return this._uidCookieName = this._cookiePrefix + "_id_1";
 }
 
 SongkickAnalytics.prototype.getAnalyticsCookieName = function() {
@@ -134,8 +138,44 @@ SongkickAnalytics.prototype.serializeCookie = function(cookieData) {
   return cookieData.analyticsUserId+"."+cookieData.creationTs+"."+cookieData.currentTs+"."+cookieData.lastVisitTs;
 }
 
+SongkickAnalytics.prototype.identifyDomain = function(host) {
+  // This function is pretty dumb: it has no knowledge of TLDs or IPv6
+  // so would not work properly if called with eg. 'bbc.co.uk' or
+  // eg. '2001:0db8:85a3:0042:1000:8a2e:0370:7334'
+
+  // Strip the trailing :port if present.
+  subdomain = new RegExp('([^:]*):?.*').exec(host)[1];
+  // Bail out for IPv4 addresses.
+  if (new RegExp('^((\\d{1,3}\\.){3}\\d{1,3})(:\\d+)?$').exec(subdomain)) {
+    return subdomain;
+  }
+  // Attempt to strip the leading subdomain, down to the first period and following chars.
+  domain_result = new RegExp('[^.]+(\\..*)').exec(subdomain);
+  // One-word hosts (with no periods) are returned as-is.
+  if (domain_result) {
+    domain = domain_result[1];
+    if (domain.split('.').length > 2) {
+      return domain;
+    }
+  }
+  return subdomain;
+}
+
 SongkickAnalytics.prototype.initAnalyticsCookie = function() {
   var nowTs = Math.round(new Date().getTime() / 1000);
+
+  // Check if we are upgrading a V1 analytics cookie. This
+  // entails preserving the analytics user ID from V1 to V2 and
+  // deleting the V1 cookie.
+  var v1CookieName = this.getV1AnalyticsCookieName();
+  var v1CookieValue = this.getCookie(v1CookieName);
+  var v1AnalyticsUserId = undefined;
+  if (v1CookieValue) {
+    v1CookieData = this.deserializeCookie(v1CookieValue);
+    v1AnalyticsUserId = v1CookieData.analyticsUserId;
+    this.setCookie(v1CookieName, '', 0, '/');
+  }
+
   var cookieName = this.getAnalyticsCookieName();
   var cookieValue = this.getCookie(cookieName);
   var cookieData = {};
@@ -151,14 +191,16 @@ SongkickAnalytics.prototype.initAnalyticsCookie = function() {
     }
   } else {
     cookieData = {
-      analyticsUserId: this.generateAnalyticsUserId(),
+      analyticsUserId: v1AnalyticsUserId ? v1AnalyticsUserId : this.generateAnalyticsUserId(),
       creationTs: nowTs,
       currentTs: nowTs,
       lastVisitTs: ''
     }
   }
+
+  domain = this.identifyDomain(window.location.host);
   cookieValue = this.serializeCookie(cookieData);
-  this.setCookie(cookieName, cookieValue, this._cookieExpiresMs);
+  this.setCookie(cookieName, cookieValue, this._cookieExpiresMs, '/', domain);
   return cookieData;
 }
 
