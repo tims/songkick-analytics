@@ -139,24 +139,18 @@ SongkickAnalytics.prototype.serializeCookie = function(cookieData) {
 }
 
 SongkickAnalytics.prototype.identifyDomain = function(host) {
-  // This function is pretty dumb: it has no knowledge of TLDs or IPv6
-  // so would not work properly if called with eg. 'bbc.co.uk' or
-  // eg. '2001:0db8:85a3:0042:1000:8a2e:0370:7334'
-
   // Strip the trailing :port if present.
   subdomain = new RegExp('([^:]*):?.*').exec(host)[1];
-  // Bail out for IPv4 addresses.
+  // Bail out for IPv4 addresses.  This function can't handle IPv6 addresses yet.
   if (new RegExp('^((\\d{1,3}\\.){3}\\d{1,3})(:\\d+)?$').exec(subdomain)) {
     return subdomain;
   }
-  // Attempt to strip the leading subdomain, down to the first period and following chars.
-  domain_result = new RegExp('[^.]+(\\..*)').exec(subdomain);
-  // One-word hosts (with no periods) are returned as-is.
-  if (domain_result) {
-    domain = domain_result[1];
-    if (domain.split('.').length > 2) {
-      return domain;
-    }
+  // Strip down to the domain.  Regexp used here is identical to
+  // DOMAIN_REGEXP in Rails' ActionDispatch:
+  // https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/cookies.rb
+  domain_result = new RegExp('[^.]*\.([^.]*|..\...|...\...)$').exec(subdomain);
+  if (domain_result && domain_result.length > 0) {
+    return "." + domain_result[0];
   }
   return subdomain;
 }
