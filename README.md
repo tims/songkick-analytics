@@ -40,20 +40,21 @@ we've got this right first.)
 
 Typlically all pages will implement at least the following:
 
-1. Load the JavaScript source from (URL). This is hosted separately to
+Load the JavaScript source from (URL). This is hosted separately to
 project specific code, and may be upgraded centrally. No breaking
 changes will ever be made without incrementing the version number.
 
-2. Initialize the framework.
+    <script type="text/javascript" src="//d20omhqjbcr74g.cloudfront.net/javascripts/songkick-analytics.0.2.1.min.js"></script>
 
-    <script type="text/javascript" src="//d20omhqjbcr74g.cloudfront.net/javascripts/songkick-analytics.0.1.4.min.js"></script>
+Initialize the framework.
+
     <script type="text/javascript">
       var page_properties = {user_id: 12345}
       var songkickAnalytics = new SongkickAnalytics("//localhost:8000/pixel.png", page_properties);
       songkickAnalytics.init()
     </script>
 
-3. Send the page load event (syntax TBD).
+Send the page load event
 
     var category = "page";
     var action = "load";
@@ -111,4 +112,3 @@ subsequently be reconstructed at the time of analysis.
 * Support for mobile applications
 * Support for server-side events
 * Association with releases / flipper configuration.
-
